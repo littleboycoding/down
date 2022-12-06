@@ -1,4 +1,7 @@
-build:
+build: clean
 	npm run build && npm run export
-	rm -rf gui/web/* && cp -r out/* gui/web
 	cd gui && go build . && mv down ../
+
+clean:
+	rm -rf gui/web/*
+	rm -f down

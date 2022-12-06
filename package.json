@@ -8,7 +8,6 @@
 		"start": "next start",
 		"export": "next export",
 		"lint": "next lint",
-		"tauri": "tauri"
 	},
 	"dependencies": {
 		"@tauri-apps/api": "^1.2.0",
