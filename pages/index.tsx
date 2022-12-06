@@ -1,17 +1,25 @@
 import { useRouter } from "next/router";
-import styled from "styled-components";
 import type { NextPage } from "next";
 
 import useMarkdownStore from "../stores/markdown";
 import useKeyboard from "../hooks/keyboard";
+
 import ContainerFooter from "../components/ContainerFooter";
 import Button from "../components/Button";
+import Column from "../components/Column";
+import Spacer from "../components/Spacer";
 
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
+const useHomeKeybinds = (selectFile: () => void) => {
+  useKeyboard([
+    {
+      key: "o",
+      modifier: {
+        ctrl: true,
+      },
+      action: selectFile,
+    },
+  ]);
+};
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -26,15 +34,7 @@ const Home: NextPage = () => {
     router.push("/pages");
   };
 
-  useKeyboard([
-    {
-      key: "o",
-      modifier: {
-        ctrl: true,
-      },
-      action: selectFile,
-    },
-  ]);
+  useHomeKeybinds(selectFile);
 
   return (
     <>
@@ -42,9 +42,24 @@ const Home: NextPage = () => {
         <h1>Down 📕</h1>
         <p>Simple, Minimalist, Keyboard-centric presentation application ❤️</p>
         <Column>
-          <Button onClick={selectFile}>Select file 📁</Button>
-          <Button disabled>Gist 📃</Button>
-          <Button disabled>Pastebin 🪣</Button>
+          <Button onClick={selectFile}>
+            <Spacer>
+              <span>📁</span>
+              <span>Select file</span>
+            </Spacer>
+          </Button>
+          <Button disabled>
+            <Spacer>
+              <span>📃</span>
+              <span>Gist</span>
+            </Spacer>
+          </Button>
+          <Button disabled>
+            <Spacer>
+              <span>🪣</span>
+              <span>Pastebin</span>
+            </Spacer>
+          </Button>
         </Column>
       </div>
       <ContainerFooter>

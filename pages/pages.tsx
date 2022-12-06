@@ -3,17 +3,12 @@ import useMarkdownStore from "../stores/markdown";
 import Markdown from "../components/Markdown";
 import { useRouter } from "next/router";
 import useKeyboard from "../hooks/keyboard";
-import { useEffect, useMemo, useState } from "react";
+import { Dispatch, useEffect, useMemo, useState } from "react";
 
 import ContainerFooter from "../components/ContainerFooter";
 
-const Page: NextPage = () => {
-  const [markdowns, setMarkdown, clearMarkdown] = useMarkdownStore((state) => [
-    state.markdowns,
-    state.setMarkdown,
-    state.clearMarkdown,
-  ]);
-  const [page, setPage] = useState(1);
+const usePageKeybinds = (page: number, setPage: Dispatch<number>) => {
+  const markdowns = useMarkdownStore((state) => state.markdowns);
   const router = useRouter();
 
   const navigate = (n: number) => {
@@ -27,12 +22,19 @@ const Page: NextPage = () => {
     setPage(newPage);
   };
 
+  const firstPage = () => setPage(1);
+  const lastPage = () => {
+    if (!markdowns) return;
+    const newPage = markdowns.length - page;
+
+    setPage(newPage);
+  };
+
   useKeyboard([
     {
       key: "Escape",
       action: async () => {
         await window.unwatch();
-        clearMarkdown();
 
         router.push("/");
       },
@@ -45,7 +47,25 @@ const Page: NextPage = () => {
       key: "d",
       action: () => navigate(1),
     },
+    {
+      key: "Home",
+      action: firstPage,
+    },
+    {
+      key: "End",
+      action: lastPage,
+    },
   ]);
+};
+
+const Page: NextPage = () => {
+  const [markdowns, setMarkdown] = useMarkdownStore((state) => [
+    state.markdowns,
+    state.setMarkdown,
+  ]);
+  const [page, setPage] = useState(1);
+
+  usePageKeybinds(page, setPage);
 
   useEffect(
     () =>

@@ -25,7 +25,7 @@ const CodeBlockStyled = (props: {
 
     div.innerHTML = escaped || "";
     highlight.highlightElement(div);
-  }, [escaped]);
+  }, [escaped, props.className]);
 
   return (
     <CodeBlock className={props.className} ref={ref}>
