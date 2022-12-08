@@ -10,7 +10,6 @@ import usePageStore from "../stores/page";
 import Markdown from "../components/Markdown";
 import ContainerFooter from "../components/ContainerFooter";
 
-
 const useKeybind = () => {
   const markdowns = useMarkdownStore((state) => state.markdowns);
   const router = useRouter();
@@ -80,7 +79,9 @@ const Page: NextPage = () => {
   return (
     <>
       <Markdown>{markdown || "Emptiness :("}</Markdown>
-      <ContainerFooter>{page + "/" + markdowns?.length || "?"}</ContainerFooter>
+      <ContainerFooter>
+        <span>{page + "/" + markdowns?.length || "?"}</span>
+      </ContainerFooter>
     </>
   );
 };
