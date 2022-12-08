@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import type { NextPage } from "next";
 
 import useMarkdownStore from "../stores/markdown";
+
 import useKeyboard from "../hooks/keyboard";
 
 import ContainerFooter from "../components/ContainerFooter";
@@ -9,7 +10,7 @@ import Button from "../components/Button";
 import Column from "../components/Column";
 import Spacer from "../components/Spacer";
 
-const useHomeKeybinds = (selectFile: () => void) => {
+const useKeybind = (selectFile: () => void) => {
   useKeyboard([
     {
       key: "o",
@@ -34,7 +35,7 @@ const Home: NextPage = () => {
     router.push("/pages");
   };
 
-  useHomeKeybinds(selectFile);
+  useKeybind(selectFile);
 
   return (
     <>
@@ -63,7 +64,9 @@ const Home: NextPage = () => {
         </Column>
       </div>
       <ContainerFooter>
-        Made with ❤️ by <b>@littleboycoding</b> with <b>Go</b>, <b>Next.js</b>
+        <span>
+          Made with ❤️ by <b>@littleboycoding</b> with <b>Go</b>, <b>Next.js</b>
+        </span>
       </ContainerFooter>
     </>
   );

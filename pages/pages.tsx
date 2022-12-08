@@ -1,34 +1,25 @@
 import { NextPage } from "next";
-import useMarkdownStore from "../stores/markdown";
-import Markdown from "../components/Markdown";
 import { useRouter } from "next/router";
-import useKeyboard from "../hooks/keyboard";
-import { Dispatch, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
+import useKeyboard from "../hooks/keyboard";
+
+import useMarkdownStore from "../stores/markdown";
+import usePageStore from "../stores/page";
+
+import Markdown from "../components/Markdown";
 import ContainerFooter from "../components/ContainerFooter";
 
-const usePageKeybinds = (page: number, setPage: Dispatch<number>) => {
+
+const useKeybind = () => {
   const markdowns = useMarkdownStore((state) => state.markdowns);
   const router = useRouter();
-
-  const navigate = (n: number) => {
-    const newPage = page + n;
-
-    if (!markdowns) return setPage(1);
-
-    if (newPage > markdowns.length) return setPage(markdowns.length);
-    if (newPage < 1) return setPage(1);
-
-    setPage(newPage);
-  };
-
-  const firstPage = () => setPage(1);
-  const lastPage = () => {
-    if (!markdowns) return;
-    const newPage = markdowns.length - page;
-
-    setPage(newPage);
-  };
+  const [page, next, previous, go] = usePageStore((state) => [
+    state.page,
+    state.next,
+    state.previous,
+    state.go,
+  ]);
 
   useKeyboard([
     {
@@ -41,19 +32,27 @@ const usePageKeybinds = (page: number, setPage: Dispatch<number>) => {
     },
     {
       key: "a",
-      action: () => navigate(-1),
+      action: () => {
+        if (page > 1) previous();
+      },
     },
     {
       key: "d",
-      action: () => navigate(1),
+      action: () => {
+        if (markdowns && page < markdowns.length) next();
+      },
     },
     {
       key: "Home",
-      action: firstPage,
+      action: () => go(1),
     },
     {
       key: "End",
-      action: lastPage,
+      action: () => {
+        if (!markdowns) return;
+
+        go(markdowns.length);
+      },
     },
   ]);
 };
@@ -63,9 +62,7 @@ const Page: NextPage = () => {
     state.markdowns,
     state.setMarkdown,
   ]);
-  const [page, setPage] = useState(1);
-
-  usePageKeybinds(page, setPage);
+  const page = usePageStore((state) => state.page);
 
   useEffect(
     () =>
@@ -77,6 +74,8 @@ const Page: NextPage = () => {
   );
 
   const markdown = useMemo(() => markdowns?.[page - 1], [markdowns, page]);
+
+  useKeybind();
 
   return (
     <>
